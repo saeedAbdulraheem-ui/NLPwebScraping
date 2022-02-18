@@ -66,8 +66,9 @@ all_items = []
 page=1
 # we will call the function get_items
 sg.theme('DarkAmber')
-layout = [[sg.Text('', size=(50, 1), relief='sunken', font=('Courier', 11),
-    text_color='yellow', background_color='black',key='TEXT')]]
+sg.theme('DarkAmber')
+layout = [[sg.Text('Please wait while data is harvested', size=(50, 1), relief='sunken', font=('Courier', 13),
+    text_color='yellow',key='TEXT')]]
 window = sg.Window('Loading...', layout, finalize=True)
 text = window['TEXT']
 state = 0
@@ -81,12 +82,6 @@ while True:
         break
 
     page += 1
-    event, values = window.read(timeout=100)
-
-    if event == sg.WINDOW_CLOSED:
-        break
-    state = (state + int(50 / limit)) % 51
-    text.update('█' * state)
     if page >= limit:
         break
 

@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+import PySimpleGUI as sg
 
 #https://mart.ps/search?controller=search&orderby=position&orderway=desc&search_query=phone&submit_search=%D8%A8%D8%AD%D8%AB
 
@@ -54,7 +55,12 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 ser = Service('C:\Program Files\webdriver\chromedriver.exe')
 driver = webdriver.Chrome(options=chrome_options, executable_path='C:\Program Files\webdriver\chromedriver.exe')
-
+sg.theme('DarkAmber')
+layout = [[sg.Text('Please wait while data is harvested', size=(50, 1), relief='sunken', font=('Courier', 13),
+    text_color='yellow',key='TEXT')]]
+window = sg.Window('Loading...', layout, finalize=True)
+text = window['TEXT']
+state = 0
 if(len(sys.argv)>1):
     limit = int(sys.argv[2])
     search = sys.argv[1] # since we would like to search for Inflight Items
@@ -68,5 +74,5 @@ all_items += results
 
 # save all the items to a json file
 json.dump(all_items, open("productsMart.json", "w"), indent=2)
-
+window.close()
 driver.close()
