@@ -6,6 +6,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from random import randint
+import PySimpleGUI as sg
 
 limit = 2
 
@@ -76,9 +78,15 @@ if(len(sys.argv)>1):
 else:
     exit("bad argument")
 all_items = []
-# we will call the function get_items
 page=1
 # we will call the function get_items
+sg.theme('DarkAmber')
+layout = [[sg.Text('', size=(50, 1), relief='sunken', font=('Courier', 11),
+    text_color='yellow', background_color='black',key='TEXT')]]
+window = sg.Window('Loading...', layout, finalize=True)
+text = window['TEXT']
+state = 0
+
 while True:
     print("getting page", page)
     results = get_items(search, page)
@@ -88,10 +96,18 @@ while True:
         break
 
     page += 1
+    event, values = window.read(timeout=100)
+
+    if event == sg.WINDOW_CLOSED:
+        break
+    state = (state + int(50 / limit)) % 51
+    text.update('█' * state)
+
     if page >= limit:
         break
 
 # save all the items to a json file
+window.close()
 del_none(all_items)
 json.dump(all_items, open("productsAjeeb.json", "w"), indent=2)
 

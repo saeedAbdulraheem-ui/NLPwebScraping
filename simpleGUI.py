@@ -19,6 +19,7 @@ event, values = window.read()
 window.close()
 
 website = values['-INWEB-']
+website = website.replace(' ', '+')
 pages = values['-INPAGES-']
 comboval = values['-combo-']
 

@@ -3,9 +3,11 @@ import time
 import json
 import os
 from selenium import webdriver
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+import PySimpleGUI as sg
 
 def get_items(search, page):
     search = search.replace(" ", "_")
@@ -61,6 +63,13 @@ else:
     exit("bad argument")
 all_items = []
 # we will call the function get_items
+sg.theme('DarkAmber')
+layout = [[sg.Text('', size=(50, 1), relief='sunken', font=('Courier', 11),
+    text_color='yellow', background_color='black',key='TEXT')]]
+window = sg.Window('Loading...', layout, finalize=True)
+text = window['TEXT']
+state = 0
+
 page=1
 while True:
     print("getting page", page)
@@ -71,10 +80,18 @@ while True:
         break
 
     page += 1
+
+    event, values = window.read(timeout=100)
+
+    if event == sg.WINDOW_CLOSED:
+        break
+    state = (state + int(50 / limit)) % 51
+    text.update('█' * state)
+
     if page >= limit:
         break
 
 # save all the items to a json file
 json.dump(all_items, open("productsWatani.json", "w"), indent=2)
-
+window.close()
 driver.close()
